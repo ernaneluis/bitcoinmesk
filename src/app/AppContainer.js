@@ -2,9 +2,7 @@ import { connect } from 'react-redux'
 
 import App from './App'
 
-const mapStateToProps = state => ({
-  scene: state.location.type,
-})
+const mapStateToProps = state => ({})
 
 const mapDispatchToProps = dispatch => ({})
 
