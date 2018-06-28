@@ -4,6 +4,8 @@ import { IntlProvider } from 'react-intl'
 import { ThemeProvider } from 'styled-components'
 import * as theme from './theme.js'
 
+import './bootstrap.css'
+
 const Container = styled.div.attrs({
   className: 'container',
 })`
