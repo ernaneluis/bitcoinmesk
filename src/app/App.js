@@ -4,6 +4,8 @@ import { IntlProvider } from 'react-intl'
 import { ThemeProvider } from 'styled-components'
 import * as theme from './theme.js'
 
+import Header from './components/header/HeaderContainer'
+
 import './bootstrap.css'
 
 const Container = styled.div.attrs({
@@ -20,7 +22,10 @@ const Container = styled.div.attrs({
 const App = ({ scene }) => (
   <IntlProvider locale="en">
     <ThemeProvider theme={theme}>
-      <Container>{scene}</Container>
+      <Container>
+        <Header />
+        {scene}
+      </Container>
     </ThemeProvider>
   </IntlProvider>
 )
