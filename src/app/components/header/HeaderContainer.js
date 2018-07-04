@@ -1,5 +1,9 @@
 import { connect } from 'react-redux'
-import { toWallet, toCreate, toImport } from '../../routerActions'
+import {
+  toWallet,
+  toCreate,
+  toImport,
+} from '../../../store/actions/routerActions'
 import Header from './Header'
 
 const mapStateToProps = state => ({})
