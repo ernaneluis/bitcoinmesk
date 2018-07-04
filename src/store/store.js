@@ -5,40 +5,36 @@ import {
   createStore,
 } from 'redux'
 import { connectRoutes } from 'redux-first-router'
-import { persistStore, persistReducer } from 'redux-persist'
 import { reducer as formReducer } from 'redux-form'
-import storage from 'redux-persist/lib/storage'
 import thunkMiddleware from 'redux-thunk'
 import createHistory from 'history/createBrowserHistory'
 
-import routesMap from './app/routesMap'
-import walletReducer from './app/scenes/wallet/store/walletReducer'
+import routesMap from '../app/routesMap'
+import walletReducer from '../store/reducers/walletReducer'
+import initReducer from '../store/reducers/initReducer'
 
 export const history = createHistory()
 
+// setup redux first router with allias names
+// https://github.com/faceyspacey/redux-first-router
 const {
   reducer: locationReducer,
   middleware: routerMiddleware,
   enhancer: routerEnhancer,
-  initialDispatch: locationInitialDispatch,
-} = connectRoutes(history, routesMap, { initialDispatch: false })
+} = connectRoutes(history, routesMap, { initialDispatch: true })
 
 const rootReducer = combineReducers({
   form: formReducer,
   location: locationReducer,
   wallet: walletReducer,
+  init: initReducer,
 })
-
-const persistConfig = {
-  blacklist: ['location', 'form'],
-  key: 'bitmask',
-  storage,
-}
-const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 const enhancers = [routerEnhancer]
 const middlewares = [thunkMiddleware, routerMiddleware]
 
+// set up react dev tool with redux
+// http://extension.remotedev.io/#usage
 const compose =
   process.env.NODE_ENV === 'development'
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || _compose
@@ -49,7 +45,6 @@ const composedEnhancers = compose(
   applyMiddleware(...middlewares)
 )
 
-const store = createStore(persistedReducer, composedEnhancers)
+const store = createStore(rootReducer, composedEnhancers)
 
-export const persistor = persistStore(store, {}, locationInitialDispatch)
 export default store
