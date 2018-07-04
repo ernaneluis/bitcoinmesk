@@ -1,9 +1,17 @@
 import { redirect } from 'redux-first-router'
-import { toWallet } from './routerActions'
+import { toWallet, toInit } from '../store/actions/routerActions'
+import { isEmpty } from 'lodash'
 
 const routesMap = {
   WALLET: {
     path: '/',
+    thunk: (dispatch, getState) => {
+      if (isEmpty(getState().wallet)) dispatch(redirect(toInit()))
+    },
+  },
+
+  INIT: {
+    path: '/init',
   },
 
   CREATE: {
