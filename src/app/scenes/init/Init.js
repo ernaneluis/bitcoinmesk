@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Field } from 'redux-form'
 
 const Wrapper = styled.div`
   min-height: 500px;
@@ -22,15 +23,55 @@ const Point = styled.div.attrs({
   z-index: 999;
 `
 
-const Init = ({ onMouseMove, tempSeed, points }) => (
+const Init = ({ onMouseMove, onSubmit, seed, points, mnemonic }) => (
   <Wrapper onMouseMove={onMouseMove}>
-    <p>
-      Secure random number generation requires that you provide some
-      unpredictable data, also called "entropy". Please move your mouse around.
-    </p>
-    <PreeSeed>{tempSeed}</PreeSeed>
-    <small>{points.length}/200</small>
-    <div>{points.map(({ x, y }, key) => <Point key={key} x={x} y={y} />)}</div>
+    {!mnemonic && (
+      <div>
+        <p>
+          Secure random number generation requires that you provide some
+          unpredictable data, also called "entropy". Please move your mouse
+          around.
+        </p>
+        <PreeSeed>{seed}</PreeSeed>
+        <small>{points.length}/200</small>
+        <div>
+          {points.map(({ x, y }, key) => <Point key={key} x={x} y={y} />)}
+        </div>
+      </div>
+    )}
+
+    {mnemonic && (
+      <form onSubmit={onSubmit}>
+        <h2>{mnemonic}</h2>
+        <label className="col-form-label">Password</label>
+        <Field
+          className="form-control"
+          component="input"
+          name="password"
+          placeholder="Password"
+          type="password"
+        />
+        <label className="col-form-label">Password Confirm</label>
+        <Field
+          className="form-control"
+          component="input"
+          name="passwordConfirm"
+          placeholder="Password"
+          type="password"
+        />
+        <label className="col-form-label">Password Hint</label>
+        <Field
+          className="form-control"
+          component="input"
+          name="passwordHint"
+          placeholder="Password Hint"
+          type="text"
+        />
+        <button type="submit" className="btn btn-success">
+          Create Wallet
+        </button>
+      </form>
+    )}
   </Wrapper>
 )
 
