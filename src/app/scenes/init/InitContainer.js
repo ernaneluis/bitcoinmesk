@@ -24,13 +24,7 @@ const mergeProps = ({ tempSeed, points }, { dispatch }, ...rest) => ({
   tempSeed,
   points,
   dispatch,
-  onMouseMove: e => {
-    // if (!mnemonic) {
-    // entropy > seed > mnemonic > hdkey + password
-    dispatch(createSeedFromEvent(e))
-
-    // }
-  },
+  onMouseMove: e => dispatch(createSeedFromEvent(e)),
 })
 
 export default connect(
