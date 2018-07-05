@@ -1,24 +1,43 @@
-import { CREATE_SEED_REQUEST, ADD_SEED_POINT } from '../typesReducers'
+import {
+  ADD_SEED_POINT,
+  CREATE_MNEMONIC_SUCCESS,
+  CREATE_SEED_REQUEST,
+  CREATE_SEED_SUCCESS,
+} from '../typesReducers'
 
 const initialState = {
-  tempSeed: '',
   points: [],
+  isSeedingDone: false,
+  seed: '',
+  mnemonic: '',
 }
 
 export default (state = initialState, { type, payload, error }) => {
   switch (type) {
-    case CREATE_SEED_REQUEST:
-      console.log('CREATE_SEED_REQUEST', payload)
-      return {
-        ...state,
-        tempSeed: payload,
-      }
-
     case ADD_SEED_POINT:
       state.points.push(payload)
       return {
         ...state,
         points: state.points,
+      }
+
+    case CREATE_SEED_REQUEST:
+      return {
+        ...state,
+        seed: payload,
+      }
+
+    case CREATE_SEED_SUCCESS:
+      return {
+        ...state,
+        seed: payload,
+        isSeedingDone: true,
+      }
+
+    case CREATE_MNEMONIC_SUCCESS:
+      return {
+        ...state,
+        mnemonic: payload,
       }
 
     default:
