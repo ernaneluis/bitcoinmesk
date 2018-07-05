@@ -13,6 +13,8 @@ import routesMap from '../app/routesMap'
 import walletReducer from '../store/reducers/walletReducer'
 import initReducer from '../store/reducers/initReducer'
 
+import { persistWallet } from './persistWallet'
+
 export const history = createHistory()
 
 // setup redux first router with allias names
@@ -46,5 +48,8 @@ const composedEnhancers = compose(
 )
 
 const store = createStore(rootReducer, composedEnhancers)
+
+// save encrypted mnemonic to local storage
+persistWallet(store)
 
 export default store
