@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Wallet = () => (
+const Wallet = ({ mnemonic }) => (
   <div>
-    <h1>w</h1>
+    <h2>{mnemonic}</h2>
   </div>
 )
 
