@@ -6,7 +6,7 @@ const routesMap = {
   WALLET: {
     path: '/',
     thunk: (dispatch, getState) => {
-      if (isEmpty(getState().wallet)) dispatch(redirect(toInit()))
+      if (isEmpty(getState().wallet.mnemonic)) dispatch(redirect(toInit()))
     },
   },
 
