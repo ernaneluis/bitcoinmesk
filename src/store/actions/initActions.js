@@ -5,6 +5,8 @@ import {
   CREATE_SEED_SUCCESS,
   CREATE_SEED_REQUEST,
   ADD_SEED_POINT,
+  SAVE_WALLET,
+  SAVE_WALLET_FAILURE,
 } from '../typesReducers'
 
 import { redirect } from 'redux-first-router'
@@ -16,8 +18,7 @@ import Seeder from '../../app/lib/bitcoin/bitcoin.seeder'
 let seeder
 
 export const initSeed = () => dispatch => {
-  console.log(process.env.REACT_APP_ENV)
-  const seedLimit = process.env.REACT_APP_ENV === 'development' ? 2 : 200
+  const seedLimit = process.env.REACT_APP_ENV === 'development' ? 10 : 200
   seeder = new Seeder(seedLimit)
   dispatch({ type: CREATE_SEED_REQUEST, payload: seeder.seed })
 }
@@ -30,9 +31,11 @@ export const createSeedFromEvent = e => dispatch => {
       .createMnemonicFromSeed(seeder.seed)
       .then(mnemonic => {
         dispatch({ type: CREATE_MNEMONIC_SUCCESS, payload: mnemonic.phrase })
-        dispatch(redirect(toWallet()))
+        // dispatch(redirect(toWallet()))
       })
-      .catch(error => dispatch({ type: CREATE_MNEMONIC_FAILURE, error }))
+      .catch(error =>
+        dispatch({ type: CREATE_MNEMONIC_FAILURE, error: error.message })
+      )
   } else {
     const timeStamp = new Date().getTime()
     // seed mouse position X and Y when mouse movements are greater than 40ms apart.
@@ -46,4 +49,26 @@ export const createSeedFromEvent = e => dispatch => {
     }
   }
 }
-// entropy > seed > mnemonic > hdkey + password
+
+export const saveWallet = ({
+  mnemonic,
+  password,
+  passwordHint,
+}) => dispatch => {
+  console.log({ mnemonic, password, passwordHint })
+  // encrypt  mnemonic + password
+  return bitcoin.utils
+    .encrypt({ message: mnemonic, password })
+    .then(encryptedMnemonic => {
+      // save object valut to localstorage using persistWallet
+      dispatch({
+        type: SAVE_WALLET,
+        payload: { encryptedMnemonic, passwordHint },
+      })
+      //TODO create first address
+      dispatch(redirect(toWallet()))
+    })
+    .catch(error =>
+      dispatch({ type: SAVE_WALLET_FAILURE, error: error.message })
+    )
+}
