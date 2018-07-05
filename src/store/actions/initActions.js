@@ -16,7 +16,9 @@ import Seeder from '../../app/lib/bitcoin/bitcoin.seeder'
 let seeder
 
 export const initSeed = () => dispatch => {
-  seeder = new Seeder(200)
+  console.log(process.env.REACT_APP_ENV)
+  const seedLimit = process.env.REACT_APP_ENV === 'development' ? 2 : 200
+  seeder = new Seeder(seedLimit)
   dispatch({ type: CREATE_SEED_REQUEST, payload: seeder.seed })
 }
 
@@ -27,7 +29,7 @@ export const createSeedFromEvent = e => dispatch => {
     bitcoin.mnemonic
       .createMnemonicFromSeed(seeder.seed)
       .then(mnemonic => {
-        dispatch({ type: CREATE_MNEMONIC_SUCCESS, payload: mnemonic })
+        dispatch({ type: CREATE_MNEMONIC_SUCCESS, payload: mnemonic.phrase })
         dispatch(redirect(toWallet()))
       })
       .catch(error => dispatch({ type: CREATE_MNEMONIC_FAILURE, error }))
@@ -44,3 +46,4 @@ export const createSeedFromEvent = e => dispatch => {
     }
   }
 }
+// entropy > seed > mnemonic > hdkey + password
