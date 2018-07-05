@@ -4,14 +4,13 @@ import Init from './Init'
 import {
   initSeed,
   createSeedFromEvent,
+  saveWallet,
 } from '../../../store/actions/initActions'
-import { isEmpty } from 'lodash'
-
-import Seeder from '../../lib/bitcoin/bitcoin.seeder'
-import utils from '../../lib/bitcoin/bitcoin.utils'
 
 const mapStateToProps = state => ({
-  tempSeed: state.init.tempSeed,
+  seed: state.init.seed,
+  mnemonic: state.init.mnemonic,
+  isSeedingDone: state.init.isSeedingDone,
   points: state.init.points,
 })
 
@@ -20,15 +19,33 @@ const mapDispatchToProps = dispatch => ({
   init: dispatch(initSeed()),
 })
 
-const mergeProps = ({ tempSeed, points }, { dispatch }, ...rest) => ({
-  tempSeed,
+const mergeProps = (
+  { isSeedingDone, seed, points, mnemonic },
+  { dispatch },
+  { handleSubmit, ...ownProps }
+) => ({
+  ...ownProps,
+  isSeedingDone,
+  seed,
   points,
+  mnemonic,
   dispatch,
-  onMouseMove: e => dispatch(createSeedFromEvent(e)),
+  onMouseMove: e => {
+    if (!isSeedingDone) dispatch(createSeedFromEvent(e))
+  },
+  onSubmit: handleSubmit(({ password, passwordHint }) =>
+    dispatch(saveWallet({ mnemonic, password, passwordHint }))
+  ),
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(Init)
+export default reduxForm({
+  form: 'initForm',
+  destroyOnUnmount: false,
+  forceUnregisterOnUnmount: true,
+})(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps
+  )(Init)
+)
