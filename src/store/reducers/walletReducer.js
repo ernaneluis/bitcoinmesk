@@ -1,6 +1,6 @@
 import {
-  FETCH_ADDRESS_FAILURE,
-  FETCH_ADDRESS_SUCCESS,
+  CREATE_PRIVATE_KEY_FAILURE,
+  CREATE_PRIVATE_KEY_SUCCESS,
   CREATE_SEED_SUCCESS,
   CREATE_MNEMONIC_SUCCESS,
 } from '../typesReducers'
@@ -8,15 +8,18 @@ import {
 const initialState = {
   seed: '',
   mnemonic: '',
+  privateKeys: [],
 }
 
 export default (state = initialState, { type, payload, error }) => {
   switch (type) {
-    case FETCH_ADDRESS_FAILURE:
+    case CREATE_PRIVATE_KEY_FAILURE:
       return { ...state, error }
 
-    case FETCH_ADDRESS_SUCCESS:
-      return { ...state, error: null }
+    case CREATE_PRIVATE_KEY_SUCCESS:
+      console.log('CREATE_PRIVATE_KEY_SUCCESS', payload)
+      state.privateKeys.push(payload)
+      return { ...state, privateKeys: state.privateKeys }
 
     case CREATE_SEED_SUCCESS:
       console.log('CREATE_SEED_SUCCESS', payload)
