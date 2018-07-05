@@ -2,11 +2,21 @@ import { connect } from 'react-redux'
 
 import Wallet from './Wallet'
 
-const mapStateToProps = state => ({})
+const mapStateToProps = state => ({
+  mnemonic: state.wallet.mnemonic,
+})
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  dispatch,
+})
+
+const mergeProps = ({ mnemonic }, { dispatch }, ...rest) => ({
+  mnemonic,
+  dispatch,
+})
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mergeProps
 )(Wallet)
