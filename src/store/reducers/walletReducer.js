@@ -1,13 +1,16 @@
 import {
   CREATE_PRIVATE_KEY_FAILURE,
   CREATE_PRIVATE_KEY_SUCCESS,
-  CREATE_SEED_SUCCESS,
-  CREATE_MNEMONIC_SUCCESS,
+  RESTORE_WALLET,
+  SAVE_WALLET,
 } from '../typesReducers'
 
 const initialState = {
-  seed: '',
-  mnemonic: '',
+  vault: {
+    // HDPathderiver
+    encryptedMnemonic: '',
+    passwordHint: '',
+  },
   privateKeys: [],
 }
 
@@ -21,18 +24,18 @@ export default (state = initialState, { type, payload, error }) => {
       state.privateKeys.push(payload)
       return { ...state, privateKeys: state.privateKeys }
 
-    case CREATE_SEED_SUCCESS:
-      console.log('CREATE_SEED_SUCCESS', payload)
+    case RESTORE_WALLET:
+      console.log('RESTORE_WALLET', payload)
+
       return {
         ...state,
-        seed: payload,
+        vault: payload,
       }
 
-    case CREATE_MNEMONIC_SUCCESS:
-      console.log('CREATE_MNEMONIC_SUCCESS', payload)
+    case SAVE_WALLET:
       return {
         ...state,
-        mnemonic: payload,
+        vault: payload,
       }
 
     default:
