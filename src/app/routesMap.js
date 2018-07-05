@@ -12,6 +12,10 @@ const routesMap = {
 
   INIT: {
     path: '/init',
+    thunk: (dispatch, getState) => {
+      // TODO: more safe checks like this should be added in future
+      if (!isEmpty(getState().wallet.vault)) dispatch(redirect(toWallet()))
+    },
   },
 
   CREATE: {
