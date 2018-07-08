@@ -1,15 +1,17 @@
 import { RESTORE_WALLET } from './typesReducers'
+import { initialState } from './reducers/walletReducer'
 
-const loadState = () => {
+export const loadState = () => {
   try {
-    const serializedState = localStorage.getItem('bitmaskWallet')
-    return serializedState === null ? undefined : JSON.parse(serializedState)
+    const stringState = localStorage.getItem('bitmaskWallet')
+    return stringState === null ? initialState : JSON.parse(stringState)
   } catch (error) {
-    return undefined
+    console.error(error)
+    return initialState
   }
 }
 
-const saveState = state => {
+export const saveState = state => {
   try {
     localStorage.setItem('bitmaskWallet', JSON.stringify(state))
   } catch (error) {
