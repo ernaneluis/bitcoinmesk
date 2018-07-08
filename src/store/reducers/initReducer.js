@@ -15,10 +15,9 @@ const initialState = {
 export default (state = initialState, { type, payload, error }) => {
   switch (type) {
     case ADD_SEED_POINT:
-      state.points.push(payload)
       return {
         ...state,
-        points: state.points,
+        points: [...state.points, payload],
       }
 
     case CREATE_SEED_REQUEST:
