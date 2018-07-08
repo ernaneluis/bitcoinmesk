@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form'
 import Create from './Create'
-import { createAddress } from '../../../store/actions/createActions'
 
 const mapStateToProps = state => ({})
 
@@ -12,7 +11,7 @@ const mapDispatchToProps = dispatch => ({
 const mergeProps = (stateProps, { dispatch }, { handleSubmit }) => ({
   ...stateProps,
   dispatch,
-  onSubmit: handleSubmit(values => dispatch(createAddress(values))),
+  onSubmit: handleSubmit(values => dispatch()),
 })
 
 export default reduxForm({
