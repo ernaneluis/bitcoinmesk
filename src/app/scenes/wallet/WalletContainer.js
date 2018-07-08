@@ -1,17 +1,25 @@
 import { connect } from 'react-redux'
-
 import Wallet from './Wallet'
+import { fetchAllKeys } from '../../../store/actions/walletActions'
 
 const mapStateToProps = state => ({
-  mnemonic: state.wallet.mnemonic,
+  keys: state.wallet.keys,
+  masterPrivateKey: state.wallet.masterPrivateKey,
+  nounceDeriviation: state.wallet.vault.nounceDeriviation,
 })
 
 const mapDispatchToProps = dispatch => ({
   dispatch,
 })
 
-const mergeProps = ({ mnemonic }, { dispatch }, ...rest) => ({
-  mnemonic,
+const mergeProps = (
+  { keys, masterPrivateKey, nounceDeriviation },
+  { dispatch },
+  { handleSubmit }
+) => ({
+  keys,
+  masterPrivateKey,
+  nounceDeriviation,
   dispatch,
 })
 
