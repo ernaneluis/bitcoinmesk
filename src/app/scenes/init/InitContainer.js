@@ -4,7 +4,7 @@ import Init from './Init'
 import {
   initSeed,
   createSeedFromEvent,
-  saveWallet,
+  initWallet,
 } from '../../../store/actions/initActions'
 
 const mapStateToProps = state => ({
@@ -34,7 +34,7 @@ const mergeProps = (
     if (!isSeedingDone) dispatch(createSeedFromEvent(e))
   },
   onSubmit: handleSubmit(({ password, passwordHint }) =>
-    dispatch(saveWallet({ mnemonic, password, passwordHint }))
+    dispatch(initWallet({ mnemonic, password, passwordHint }))
   ),
 })
 
