@@ -21,12 +21,14 @@ const createMnemonicFromSeed = seedHex =>
     }
   })
 
-const createHDPrivateFromMnemonic = mnemonic =>
+const getMasterKeyFromMnemonic = ({ mnemonic, password }) =>
   new Promise((resolve, reject) => {
     try {
+      const network =
+        process.env.REACT_APP_ENV === 'development' ? 'testnet' : 'livenet'
       const mnemonicObj = new Mnemonic(mnemonic)
-      let hdPrivate = mnemonicObj.toHDPrivateKey('testnet') // or livenet
-      resolve(hdPrivate)
+      const masterHDPrivateKey = mnemonicObj.toHDPrivateKey(password, network)
+      resolve(masterHDPrivateKey)
     } catch (error) {
       reject(error)
     }
@@ -34,4 +36,4 @@ const createHDPrivateFromMnemonic = mnemonic =>
 
 // var mnemonic = new Mnemonic()
 // var seed = mnemonic.toSeed('my passphrase')
-export default { createMnemonicFromSeed, createHDPrivateFromMnemonic }
+export default { createMnemonicFromSeed, getMasterKeyFromMnemonic }
