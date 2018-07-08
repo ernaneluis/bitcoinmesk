@@ -60,6 +60,7 @@ export const fetchAllKeys = ({
       payload: keys,
     })
   } catch (error) {
+    console.error({ error })
     dispatch({
       type: CREATE_KEY_FAILURE,
     })

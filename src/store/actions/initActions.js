@@ -35,9 +35,10 @@ export const createSeedFromEvent = e => dispatch => {
       .then(mnemonic =>
         dispatch({ type: CREATE_MNEMONIC_SUCCESS, payload: mnemonic.phrase })
       )
-      .catch(error =>
+      .catch(error => {
+        console.error({ error })
         dispatch({ type: CREATE_MNEMONIC_FAILURE, error: error.message })
-      )
+      })
   } else {
     const timeStamp = new Date().getTime()
     // seed mouse position X and Y when mouse movements are greater than 40ms apart.
@@ -63,6 +64,7 @@ export const initWallet = ({ mnemonic, password, passwordHint }) => dispatch =>
       })
       dispatch(redirect(toWallet()))
     })
-    .catch(error =>
+    .catch(error => {
+      console.error({ error })
       dispatch({ type: SAVE_WALLET_FAILURE, error: error.message })
-    )
+    })
