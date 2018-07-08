@@ -1,12 +1,15 @@
 import {
+  ADD_SEED_POINT,
   CREATE_MNEMONIC_FAILURE,
   CREATE_MNEMONIC_REQUEST,
   CREATE_MNEMONIC_SUCCESS,
-  CREATE_SEED_SUCCESS,
+  CREATE_PRIVATE_KEY_REQUEST,
+  CREATE_PRIVATE_KEY_SUCCESS,
   CREATE_SEED_REQUEST,
-  ADD_SEED_POINT,
+  CREATE_SEED_SUCCESS,
   SAVE_WALLET,
   SAVE_WALLET_FAILURE,
+  SAVE_MASTER_PRIVATE_KEY,
 } from '../typesReducers'
 
 import { redirect } from 'redux-first-router'
@@ -29,10 +32,9 @@ export const createSeedFromEvent = e => dispatch => {
     dispatch({ type: CREATE_MNEMONIC_REQUEST })
     bitcoin.mnemonic
       .createMnemonicFromSeed(seeder.seed)
-      .then(mnemonic => {
+      .then(mnemonic =>
         dispatch({ type: CREATE_MNEMONIC_SUCCESS, payload: mnemonic.phrase })
-        // dispatch(redirect(toWallet()))
-      })
+      )
       .catch(error =>
         dispatch({ type: CREATE_MNEMONIC_FAILURE, error: error.message })
       )
@@ -50,14 +52,8 @@ export const createSeedFromEvent = e => dispatch => {
   }
 }
 
-export const saveWallet = ({
-  mnemonic,
-  password,
-  passwordHint,
-}) => dispatch => {
-  console.log({ mnemonic, password, passwordHint })
-  // encrypt  mnemonic + password
-  return bitcoin.utils
+export const initWallet = ({ mnemonic, password, passwordHint }) => dispatch =>
+  bitcoin.utils
     .encrypt({ message: mnemonic, password })
     .then(encryptedMnemonic => {
       // save object valut to localstorage using persistWallet
@@ -65,10 +61,8 @@ export const saveWallet = ({
         type: SAVE_WALLET,
         payload: { encryptedMnemonic, passwordHint },
       })
-      //TODO create first address
       dispatch(redirect(toWallet()))
     })
     .catch(error =>
       dispatch({ type: SAVE_WALLET_FAILURE, error: error.message })
     )
-}
