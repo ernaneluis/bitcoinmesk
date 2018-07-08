@@ -1,4 +1,5 @@
 import CryptoJS from 'crypto-js'
+
 // Convert a byte array to a hex string
 const bytesToHex = bytes => {
   for (var hex = [], i = 0; i < bytes.length; i++) {
@@ -19,24 +20,22 @@ const getRandomInt = (min, max) => {
 const encrypt = ({ message, password }) =>
   new Promise((resolve, reject) => {
     try {
-      const encrypted = CryptoJS.AES.encrypt(message, password).toString()
+      const encrypted = CryptoJS.AES.encrypt(message, password)
+      const decrypted = CryptoJS.AES.decrypt(encrypted, password)
+      const decryptedString = decrypted.toString(CryptoJS.enc.Utf8)
+      if (message !== decryptedString) reject(new Error('Encryption error'))
 
-      const decryptedMessage = CryptoJS.AES.decrypt(
-        encrypted,
-        password
-      ).toString(CryptoJS.enc.Utf8)
-      if (message !== decryptedMessage) reject(new Error('Encryption error'))
-
-      resolve(encrypted)
+      resolve(encrypted.toString())
     } catch (error) {
       reject(error)
     }
   })
 
-const dencrypt = ({ encrypted, password }) =>
+const dencrypt = ({ message, password }) =>
   new Promise((resolve, reject) => {
     try {
-      resolve(CryptoJS.AES.decrypt(encrypted, password))
+      const decrypted = CryptoJS.AES.decrypt(message, password)
+      resolve(decrypted.toString(CryptoJS.enc.Utf8))
     } catch (error) {
       reject(error)
     }
