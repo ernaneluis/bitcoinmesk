@@ -5,6 +5,7 @@ import Wallet from '../../scenes/wallet/WalletContainer'
 import Init from '../../scenes/init/InitContainer'
 import Create from '../../scenes/create/CreateContainer'
 import Import from '../../scenes/import/ImportContainer'
+import Lock from '../../scenes/lock/LockContainer'
 
 const Container = styled.main.attrs({
   className: 'container',
@@ -30,6 +31,7 @@ const Body = ({ scene }) => (
   <Container>
     {scene === 'WALLET' && <Wallet />}
     {scene === 'INIT' && <Init />}
+    {scene === 'LOCK' && <Lock />}
     {scene === 'CREATE' && <Create />}
     {scene === 'IMPORT' && <Import />}
   </Container>
