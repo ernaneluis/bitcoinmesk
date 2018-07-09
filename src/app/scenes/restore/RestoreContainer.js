@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import Import from './Import'
+import Restore from './Restore'
 
 const mapStateToProps = state => ({})
 
@@ -9,4 +9,4 @@ const mapDispatchToProps = dispatch => ({})
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Import)
+)(Restore)
