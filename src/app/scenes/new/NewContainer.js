@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form'
-import Init from './Init'
+import New from './New'
 import {
   initSeed,
   createSeedFromEvent,
@@ -47,5 +47,5 @@ export default reduxForm({
     mapStateToProps,
     mapDispatchToProps,
     mergeProps
-  )(Init)
+  )(New)
 )
