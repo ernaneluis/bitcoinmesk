@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form'
-import Create from './Create'
+import Receive from './Receive'
 
 const mapStateToProps = state => ({})
 
@@ -23,5 +23,5 @@ export default reduxForm({
     mapStateToProps,
     mapDispatchToProps,
     mergeProps
-  )(Create)
+  )(Receive)
 )
