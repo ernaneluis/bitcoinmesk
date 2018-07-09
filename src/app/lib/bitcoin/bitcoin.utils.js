@@ -41,4 +41,15 @@ const dencrypt = ({ message, password }) =>
     }
   })
 
-export default { bytesToHex, getRandomInt, encrypt, dencrypt }
+// Bitcoin minimum unit is "Satoshi". 1 satoshi = 1 / 10^8 BTC
+const satoshiToBitcoin = satoshi => satoshi / Math.pow(10, 8)
+const bitcoinToSatoshi = bitcoin => bitcoin * Math.pow(10, 8)
+
+export default {
+  bytesToHex,
+  getRandomInt,
+  encrypt,
+  dencrypt,
+  satoshiToBitcoin,
+  bitcoinToSatoshi,
+}
