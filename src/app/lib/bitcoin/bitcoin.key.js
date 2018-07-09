@@ -3,8 +3,25 @@ import { HDPrivateKey, PrivateKey, Networks, PublicKey } from 'bitcore-lib'
 // ' means hardened or h, 0' === 0h
 // derivationPath: "m/44'/0'/0'/0/0",
 // derivation scheme: "m / 44' / coin_type' / account' / change / address_index"
-const getDerivationPath = nounceDeriviation =>
-  `m/44'/0'/0'/0/${nounceDeriviation}`
+
+const getDerivationPath = (nounceDeriviation, isChange = false) => {
+  const coinType =
+    process.env.REACT_APP_ENV === 'development'
+      ? '1' // Bitcoin Testnet
+      : '0' // Bitcoin Livenet
+
+  // +isChange convert false to 0 and true to 1
+  const path = `m/44'/${coinType}'/0'/${+isChange}/${nounceDeriviation}`
+  console.log(path)
+  return path
+}
+
+// Constant 0 is used for external chain and constant 1 for internal chain (also known as change addresses).
+// External chain is used for addresses that are meant to be visible outside of the wallet
+// (e.g. for receiving payments). Internal chain is used for addresses which are not meant to be visible
+// outside of the wallet and is used for return transaction change. Public derivation is used at this level.
+const getChangeDerivationPath = nounceDeriviation =>
+  getDerivationPath(nounceDeriviation, true)
 
 export const deriveKey = (masterPrivateKey, nounceDeriviation) =>
   new Promise((resolve, reject) => {
@@ -14,7 +31,7 @@ export const deriveKey = (masterPrivateKey, nounceDeriviation) =>
         publicKey: '',
         address: '',
       }
-      createPrivateKeyFromMasterPrivateKey(masterPrivateKey, nounceDeriviation)
+      derivePrivateKeyFromMasterPrivateKey(masterPrivateKey, nounceDeriviation)
         .then(privateKey => {
           key.privateKey = privateKey.toWIF()
           return getPublicKeyFromPrivateKey(privateKey)
@@ -34,22 +51,24 @@ export const deriveKey = (masterPrivateKey, nounceDeriviation) =>
   })
 
 // https://bitcore.io/api/lib/hd-keys
-const createPrivateKeyFromMasterPrivateKey = (
+const derivePrivateKeyFromMasterPrivateKey = (
   masterPrivateKey,
   nounceDeriviation
 ) =>
   new Promise((resolve, reject) => {
     try {
       const hdPrivateKey = new HDPrivateKey(masterPrivateKey)
-      const isValid = HDPrivateKey.isValidPath(
-        getDerivationPath(nounceDeriviation),
-        true
-      )
-      const derived = hdPrivateKey.derive(getDerivationPath(nounceDeriviation))
-      const privateKey = derived.privateKey
-      // obtain HDPublicKey
-      // var hdPublicKey = hdPrivateKey.hdPublicKey;
-      resolve(privateKey)
+      if (
+        HDPrivateKey.isValidPath(getDerivationPath(nounceDeriviation), true)
+      ) {
+        const derived = hdPrivateKey.derive(
+          getDerivationPath(nounceDeriviation)
+        )
+        const privateKey = derived.privateKey
+        resolve(privateKey)
+        // obtain HDPublicKey
+        // var hdPublicKey = hdPrivateKey.hdPublicKey;
+      } else reject(new Error('Invalid derivation path'))
     } catch (error) {
       reject(error)
     }
@@ -83,7 +102,7 @@ const getAddressFromPublicKey = publicKey =>
 
 export default {
   deriveKey,
-  createPrivateKeyFromMasterPrivateKey,
+  derivePrivateKeyFromMasterPrivateKey,
   getPublicKeyFromPrivateKey,
   getAddressFromPublicKey,
 }
@@ -107,4 +126,34 @@ more:
 // https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
 // https://bitcoin.org/en/developer-guide#loose-key-wallets
 // https://bitcoin.stackexchange.com/questions/62533/key-derivation-in-hd-wallets-using-the-extended-private-key-vs-hardened-derivati
+// bip 32 aka Hd Wallet https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
+// bip 44 aka standard hd wallet https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
+// TODO: bip 38 aka Passphrase-protected private key https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki 
+// example bip 38 https://github.com/bitcoinjs/bip38
+*/
+
+/* TODO to import wallet it needs: Account discovery function
+https://github.com/bitpay/copay/commit/29920abdb3771940d0f5d4eb5f551a3f19d93507
+
+When the master seed is imported from an external source the software should start to discover the accounts in 
+the following manner:
+
+1 derive the first account's node (index = 0)
+2 derive the external chain node of this account
+3 scan addresses of the external chain; respect the gap limit described below
+4 if no transactions are found on the external chain, stop discovery
+5 if there are some transactions, increase the account index and go to step 1
+
+This algorithm is successful because software should disallow creation of new accounts if previous one has no
+transaction history, as described in chapter "Account" above.
+Please note that the algorithm works with the transaction history, not account balances, so you can have an
+account with 0 total coins and the algorithm will still continue with discovery.
+
+Address gap limit
+Address gap limit is currently set to 20. If the software hits 20 unused addresses in a row, it expects there
+are no used addresses beyond this point and stops searching the address chain. We scan just the external chains,
+because internal chains receive only coins that come from the associated external chains.
+
+Wallet software should warn when the user is trying to exceed the gap limit on an external chain by generating a
+new address.
 */
