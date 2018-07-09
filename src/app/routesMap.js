@@ -1,5 +1,10 @@
 import { redirect } from 'redux-first-router'
-import { toWallet, toInit, toLock } from '../store/actions/routerActions'
+import {
+  toWallet,
+  toWelcome,
+  toNew,
+  toLock,
+} from '../store/actions/routerActions'
 import { isEmpty } from 'lodash'
 import { restoreWallet, fetchAllKeys } from '../store/actions/walletActions'
 
@@ -11,9 +16,9 @@ const routesMap = {
       dispatch(restoreWallet())
 
       if (isEmpty(getState().wallet.vault.encryptedMnemonic))
-        dispatch(redirect(toInit()))
-      else if (isEmpty(getState().wallet.masterPrivateKey))
-        dispatch(redirect(toLock()))
+        dispatch(redirect(toWelcome()))
+      // else if (isEmpty(getState().wallet.masterPrivateKey))
+      //   dispatch(redirect(toLock()))
       else {
         const keys = getState().wallet.keys
         const masterPrivateKey = getState().wallet.masterPrivateKey
@@ -24,11 +29,20 @@ const routesMap = {
     },
   },
 
-  INIT: {
-    path: '/init',
+  NEW: {
+    path: '/new',
     thunk: (dispatch, getState) => {
       dispatch(restoreWallet())
       // TODO: more safe checks like this should be added in future
+      if (!isEmpty(getState().wallet.vault.encryptedMnemonic))
+        dispatch(redirect(toWallet()))
+    },
+  },
+
+  WELCOME: {
+    path: '/welcome',
+    thunk: (dispatch, getState) => {
+      dispatch(restoreWallet())
       if (!isEmpty(getState().wallet.vault.encryptedMnemonic))
         dispatch(redirect(toWallet()))
     },
@@ -38,16 +52,16 @@ const routesMap = {
     path: '/lock',
   },
 
-  CREATE: {
-    path: '/create',
+  RECEIVE: {
+    path: '/receive',
   },
 
-  IMPORT: {
-    path: '/import',
+  SEND: {
+    path: '/send',
   },
 
-  TRANSACTION: {
-    path: '/tx',
+  RESTORE: {
+    path: '/restore',
   },
 
   CATCH_ALL_REDIRECT: {
