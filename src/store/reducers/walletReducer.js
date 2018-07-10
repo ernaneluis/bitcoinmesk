@@ -21,9 +21,9 @@ export const initialState = {
     encryptedMnemonic: '',
     nounceDeriviation: 0,
     passwordHint: '',
+    keys: [],
   },
   masterPrivateKey: '',
-  keys: [],
 }
 
 export default (state = initialState, { type, payload, error }) => {
@@ -35,16 +35,22 @@ export default (state = initialState, { type, payload, error }) => {
       console.log('CREATE_KEY_SUCCESS', payload)
       return {
         ...state,
-        // redux expect a new state object in order to call render
-        keys: [...state.keys, payload],
+        vault: {
+          ...state.vault,
+          // redux expect a new state object in order to call render
+          keys: [...state.vault.keys, payload],
+        },
       }
 
     case FETCH_ALL_KEYS_SUCCESS:
       console.log('FETCH_ALL_KEYS_SUCCESS', payload)
       return {
         ...state,
-        // redux expect a new state object in order to call render
-        keys: payload,
+        vault: {
+          ...state.vault,
+          // redux expect a new state object in order to call render
+          keys: [...state.vault.keys, payload],
+        },
       }
 
     case RESTORE_WALLET:
@@ -57,7 +63,7 @@ export default (state = initialState, { type, payload, error }) => {
     case SAVE_WALLET:
       return {
         ...state,
-        vault: { ...payload, nounceDeriviation: 0 },
+        vault: { ...payload, nounceDeriviation: 0, keys: [] },
       }
 
     case FETCH_MASTER_PRIVATE_KEY:
