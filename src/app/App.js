@@ -18,12 +18,14 @@ body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
 }
+
+.box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
 `
 
 const App = () => (
   <IntlProvider locale="en">
     <ThemeProvider theme={theme}>
-      <div>
+      <div className="bg-light">
         <Body />
         <Footer />
       </div>
