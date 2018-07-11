@@ -22,9 +22,9 @@ const HeaderWrapper = styled.header`
   height: 23vh;
 `
 
-const Wallet = ({ keys, onSendClick }) => (
+const Wallet = ({ transactions, onSendClick }) => (
   <div>
-    <HeaderWrapper className="container bg-light">
+    <HeaderWrapper className="container">
       <div className="row pt-2 justify-content-between">
         <div className="col-6 text-left">
           <Link to={toWallet()} className="btn btn-outline-dark">
@@ -59,20 +59,67 @@ const Wallet = ({ keys, onSendClick }) => (
         </div>
       </div>
     </HeaderWrapper>
-    {!!keys.length && (
+    {!!transactions.length && (
       <div>
-        <h1> balance sum of utxos </h1>
-        <p>Transactions </p>
-        {keys.map(({ privateKey, publicKey, address }, key) => (
-          <div key={key}>
-            <p> {address} </p>
-          </div>
-        ))}
+        <div className="my-3 p-3 bg-white rounded box-shadow">
+          <h6 className="border-bottom border-gray pb-2 mb-0">Transactions</h6>
+
+          {transactions.map(
+            ({ date, type, address, amount, confirmations, txhash }, key) => (
+              <div
+                className="row small text-muted pt-3 border-bottom"
+                key={key}
+              >
+                <div className="col-1 pt-2">
+                  {type === 'SEND' ? (
+                    <FontAwesomeIcon icon={faSignOutAlt} size="2x" />
+                  ) : (
+                    <FontAwesomeIcon icon={faSignInAlt} size="2x" />
+                  )}
+                </div>
+                <div className="col-8">
+                  <p>
+                    <strong className="text-gray-dark">
+                      <a
+                        href={`https://insight.bitpay.com/tx/${txhash}`}
+                        target="_blank"
+                      >
+                        {address}
+                      </a>
+                    </strong>
+                  </p>
+                  <p>
+                    <span className="d-block">{date}</span>
+                  </p>
+                </div>
+                <div className="col-3">
+                  <p>{amount} BTC</p>
+                  <p>
+                    <small>{confirmations} Confirmations</small>
+                  </p>
+                </div>
+              </div>
+            )
+          )}
+
+          <small className="d-block text-right mt-3">
+            <a href="#">All Transactions</a>
+          </small>
+        </div>
       </div>
     )}
 
-    {!!!keys.length && <h2>no address create one now</h2>}
+    {!!!transactions.length && <h2>No transaction</h2>}
   </div>
 )
 
 export default Wallet
+
+{
+  /* <div className="pb-3 mb-0 small border-bottom">
+<div className="d-flex justify-content-between align-items-center w-100">
+
+</div>
+
+</div> */
+}
