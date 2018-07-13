@@ -49,12 +49,12 @@ const Wallet = ({ transactions, onSendClick }) => (
 
       <div className="row h-25 justify-content-between">
         <div className="col-6 text-left">
-          <Link to={toReceive()} className="btn btn-outline-warning btn-lg">
+          <Link to={toReceive()} className="btn btn-outline-success btn-lg">
             <FontAwesomeIcon icon={faSignInAlt} />RECEIVE
           </Link>
         </div>
         <div className="col-6 text-right">
-          <Link to={toSend()} className="btn btn-outline-success btn-lg">
+          <Link to={toSend()} className="btn btn-outline-danger btn-lg">
             SEND <FontAwesomeIcon icon={faSignOutAlt} />
           </Link>
         </div>
@@ -73,12 +73,20 @@ const Wallet = ({ transactions, onSendClick }) => (
               >
                 <div className="col-1 pt-2">
                   {type === 'SEND' ? (
-                    <FontAwesomeIcon icon={faSignOutAlt} size="2x" />
+                    <FontAwesomeIcon
+                      icon={faSignOutAlt}
+                      size="2x"
+                      className="text-danger"
+                    />
                   ) : (
-                    <FontAwesomeIcon icon={faSignInAlt} size="2x" />
+                    <FontAwesomeIcon
+                      icon={faSignInAlt}
+                      size="2x"
+                      className="text-success"
+                    />
                   )}
                 </div>
-                <div className="col-8">
+                <div className="col-7">
                   <p>
                     <strong className="text-gray-dark">
                       <a
@@ -93,8 +101,13 @@ const Wallet = ({ transactions, onSendClick }) => (
                     <span className="d-block">{date}</span>
                   </p>
                 </div>
-                <div className="col-3">
-                  <p>{amount} BTC</p>
+                <div className="col-4 text-right">
+                  {type === 'SEND' ? (
+                    <p className="text-danger"> -{amount} BTC</p>
+                  ) : (
+                    <p className="text-success"> +{amount} BTC</p>
+                  )}
+
                   <p>
                     <small>{confirmations} Confirmations</small>
                   </p>
