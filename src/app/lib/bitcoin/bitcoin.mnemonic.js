@@ -1,5 +1,7 @@
 import * as Mnemonic from 'bitcore-mnemonic'
 import utils from './bitcoin.utils'
+import { Networks } from 'bitcore-lib'
+
 // entropy > seed > mnemonic + password > hdkey
 const createMnemonicFromSeed = seedHex =>
   new Promise((resolve, reject) => {
@@ -21,13 +23,17 @@ const createMnemonicFromSeed = seedHex =>
     }
   })
 
-const getMasterKeyFromMnemonic = ({ mnemonic, password }) =>
+const getMasterKey = ({ mnemonic }) =>
   new Promise((resolve, reject) => {
     try {
       const network =
-        process.env.REACT_APP_ENV === 'development' ? 'testnet' : 'livenet'
+        process.env.REACT_APP_ENV === 'development'
+          ? Networks.testnet
+          : Networks.livenet
       const mnemonicObj = new Mnemonic(mnemonic)
-      const masterHDPrivateKey = mnemonicObj.toHDPrivateKey(password, network)
+      // another wallets like copay wont support passphrase on masterPrivateKey derivation
+      // then password is empty: ''
+      const masterHDPrivateKey = mnemonicObj.toHDPrivateKey('', network)
       resolve(masterHDPrivateKey)
     } catch (error) {
       reject(error)
@@ -36,4 +42,4 @@ const getMasterKeyFromMnemonic = ({ mnemonic, password }) =>
 
 // var mnemonic = new Mnemonic()
 // var seed = mnemonic.toSeed('my passphrase')
-export default { createMnemonicFromSeed, getMasterKeyFromMnemonic }
+export default { createMnemonicFromSeed, getMasterKey }
