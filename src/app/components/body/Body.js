@@ -8,6 +8,7 @@ import Restore from '../../scenes/restore/RestoreContainer'
 import Lock from '../../scenes/lock/LockContainer'
 import Send from '../../scenes/send/SendContainer'
 import Welcome from '../../scenes/welcome/WelcomeContainer'
+import Backup from '../../scenes/backup/BackupContainer'
 
 const Container = styled.main.attrs({
   className: 'container',
@@ -24,6 +25,7 @@ const Body = ({ scene }) => (
     {scene === 'RECEIVE' && <Receive />}
     {scene === 'SEND' && <Send />}
     {scene === 'WELCOME' && <Welcome />}
+    {scene === 'BACKUP' && <Backup />}
   </Container>
 )
 
