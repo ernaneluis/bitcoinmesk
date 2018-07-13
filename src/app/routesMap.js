@@ -82,6 +82,13 @@ const routesMap = {
     path: '/restore',
   },
 
+  BACKUP: {
+    path: '/backup',
+    thunk: (dispatch, getState) => {
+      if (isEmpty(getState().wallet.mnemonic)) dispatch(redirect(toLock()))
+    },
+  },
+
   CATCH_ALL_REDIRECT: {
     path: '*',
     thunk: dispatch => dispatch(redirect(toWallet())),
