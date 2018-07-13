@@ -6,6 +6,7 @@ import {
   FETCH_MASTER_PRIVATE_KEY,
   INCREASE_NOUNCE_DERIVATION,
   FETCH_ALL_KEYS_SUCCESS,
+  FETCH_MNEMONIC,
 } from '../typesReducers'
 
 // not safe keep on local storage uncrypted data such as masterPrivateKey
@@ -24,6 +25,7 @@ export const initialState = {
     keys: [],
   },
   masterPrivateKey: '',
+  mnemonic: '',
 }
 
 export default (state = initialState, { type, payload, error }) => {
@@ -80,6 +82,13 @@ export default (state = initialState, { type, payload, error }) => {
       return {
         ...state,
         vault: { ...state.vault, nounceDeriviation },
+      }
+
+    case FETCH_MNEMONIC:
+      console.log('FETCH_MNEMONIC', payload)
+      return {
+        ...state,
+        mnemonic: payload,
       }
 
     default:
