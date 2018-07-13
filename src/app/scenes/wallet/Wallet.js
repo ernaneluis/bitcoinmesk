@@ -6,6 +6,7 @@ import {
   toSend,
   toWallet,
   toReceive,
+  toBackup,
 } from '../../../store/actions/routerActions'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -33,7 +34,7 @@ const Wallet = ({ transactions, onSendClick }) => (
         </div>
 
         <div className="col-6 text-right">
-          <Link to={toWallet()} className="btn btn-outline-dark">
+          <Link to={toBackup()} className="btn btn-outline-dark">
             <FontAwesomeIcon icon={faCog} />
           </Link>
         </div>
