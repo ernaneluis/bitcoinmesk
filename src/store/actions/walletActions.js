@@ -6,6 +6,7 @@ import {
   FETCH_MASTER_PRIVATE_KEY,
   INCREASE_NOUNCE_DERIVATION,
   RESTORE_WALLET,
+  FETCH_MNEMONIC,
 } from '../typesReducers'
 
 import { loadState } from '../persistWallet'
@@ -70,17 +71,19 @@ export const fetchAllKeys = ({
 export const unlockWallet = ({ encryptedMnemonic, password }) => dispatch => {
   bitcoin.utils
     .dencrypt({ message: encryptedMnemonic, password })
-    .then(mnemonic =>
-      bitcoin.mnemonic.getMasterKeyFromMnemonic({
-        mnemonic,
-        password,
+    .then(mnemonic => {
+      dispatch({
+        type: FETCH_MNEMONIC,
+        payload: mnemonic.toString(),
       })
-    )
+      return bitcoin.mnemonic.getMasterKey({ mnemonic })
+    })
     .then(masterPrivateKey => {
       dispatch({
         type: FETCH_MASTER_PRIVATE_KEY,
         payload: masterPrivateKey.toString(),
       })
+
       dispatch(toWallet())
     })
 }
