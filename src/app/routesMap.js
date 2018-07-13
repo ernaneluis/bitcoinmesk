@@ -17,9 +17,9 @@ import {
 const routesMap = {
   WALLET: {
     path: '/',
-    thunk: (dispatch, getState) => {
+    thunk: async (dispatch, getState) => {
       // must call restore wallet on route because thunk is called first than persistWallet
-      dispatch(restoreWallet())
+      await dispatch(restoreWallet())
 
       if (isEmpty(getState().wallet.vault.encryptedMnemonic))
         dispatch(redirect(toWelcome()))
@@ -37,8 +37,8 @@ const routesMap = {
 
   NEW: {
     path: '/new',
-    thunk: (dispatch, getState) => {
-      dispatch(restoreWallet())
+    thunk: async (dispatch, getState) => {
+      await dispatch(restoreWallet())
       // TODO: more safe checks like this should be added in future
       if (!isEmpty(getState().wallet.vault.encryptedMnemonic))
         dispatch(redirect(toWallet()))
@@ -47,8 +47,8 @@ const routesMap = {
 
   WELCOME: {
     path: '/welcome',
-    thunk: (dispatch, getState) => {
-      dispatch(restoreWallet())
+    thunk: async (dispatch, getState) => {
+      await dispatch(restoreWallet())
       if (!isEmpty(getState().wallet.vault.encryptedMnemonic))
         dispatch(redirect(toWallet()))
     },
@@ -60,11 +60,11 @@ const routesMap = {
 
   RECEIVE: {
     path: '/receive',
-    thunk: (dispatch, getState) => {
-      dispatch(restoreWallet())
+    thunk: async (dispatch, getState) => {
+      await dispatch(restoreWallet())
       // if it is just after new
       if (!!getState().wallet.vault.nounceDeriviation.length) {
-        dispatch(
+        await dispatch(
           createKey({
             masterPrivateKey: getState().wallet.masterPrivateKey,
             nounceDeriviation: 0,

@@ -5,9 +5,7 @@ import { isEmpty, last } from 'lodash'
 import { createKey } from '../../../store/actions/walletActions'
 
 const mapStateToProps = state => ({
-  address: !isEmpty(state.wallet.vault.keys)
-    ? last(state.wallet.vault.keys).address
-    : '',
+  address: last(state.wallet.vault.keys).address,
   balance: 12.65426781,
   masterPrivateKey: state.wallet.vault.masterPrivateKey,
   nounceDeriviation: state.wallet.vault.nounceDeriviation,

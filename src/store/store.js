@@ -23,6 +23,7 @@ const {
   reducer: locationReducer,
   middleware: routerMiddleware,
   enhancer: routerEnhancer,
+  thunk,
 } = connectRoutes(history, routesMap, { initialDispatch: true })
 
 const rootReducer = combineReducers({
@@ -51,5 +52,7 @@ const store = createStore(rootReducer, composedEnhancers)
 
 // save encrypted mnemonic to local storage
 persistWallet(store)
+// wait for route to complete thunks before rendering
+const waitForThunk = () => thunk(store)
 
 export default store
