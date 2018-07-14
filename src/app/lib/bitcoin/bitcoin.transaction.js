@@ -35,7 +35,4 @@ export const sendTransaction = ({ rawTx, provider = 'insight' }) => {
 export const getTransaction = ({ txhash, provider = 'insight' }) =>
   getProvider(provider).getTransaction({ txhash })
 
-export const getAllTransactions = ({ address, provider = 'insight' }) =>
-  getProvider(provider).getAllTransactions({ address })
-
 export default { makeTransaction }
