@@ -10,4 +10,7 @@ export const getBalance = ({ address, provider = 'insight' }) =>
 export const getUtxo = ({ address, provider = 'insight' }) =>
   getProvider(provider).getUtxo({ address })
 
-export default { getAddress, getUtxo, getBalance }
+export const getAllTransactions = ({ address, provider = 'insight' }) =>
+  getProvider(provider).getAllTransactions({ address })
+
+export default { getAddress, getUtxo, getBalance, getAllTransactions }
