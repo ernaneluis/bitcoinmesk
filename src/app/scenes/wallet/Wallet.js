@@ -19,11 +19,13 @@ import {
 
 import { faBitcoin } from '@fortawesome/free-brands-svg-icons'
 
+import * as bitcoin from '../../lib/bitcoin'
+
 const HeaderWrapper = styled.header`
   height: 23vh;
 `
 
-const Wallet = ({ transactions, onSendClick }) => (
+const Wallet = ({ address, balance, transactions, onSendClick }) => (
   <div>
     <HeaderWrapper className="container">
       <div className="row pt-2 justify-content-between">
@@ -42,8 +44,10 @@ const Wallet = ({ transactions, onSendClick }) => (
       <div className="row align-items-center h-50">
         <div className="col-12 mx-auto text-center">
           <h3>
-            120.00 <FontAwesomeIcon icon={faBitcoin} />
+            {bitcoin.utils.satoshiToBitcoin(balance)}{' '}
+            <FontAwesomeIcon icon={faBitcoin} />
           </h3>
+          <small className="text-muted">{address} </small>
         </div>
       </div>
 
@@ -66,7 +70,7 @@ const Wallet = ({ transactions, onSendClick }) => (
           <h6 className="border-bottom border-gray pb-2 mb-0">Transactions</h6>
 
           {transactions.map(
-            ({ date, type, address, amount, confirmations, txhash }, key) => (
+            ({ time, type, value, confirmations, txid }, key) => (
               <div
                 className="row small text-muted pt-3 border-bottom"
                 key={key}
@@ -90,22 +94,33 @@ const Wallet = ({ transactions, onSendClick }) => (
                   <p>
                     <strong className="text-gray-dark">
                       <a
-                        href={`https://insight.bitpay.com/tx/${txhash}`}
+                        href={`https://insight.bitpay.com/tx/${txid}`}
                         target="_blank"
                       >
-                        {address}
+                        {txid.substr(0, 50)}...
                       </a>
                     </strong>
                   </p>
+
                   <p>
-                    <span className="d-block">{date}</span>
+                    <span className="d-block">
+                      {
+                        Date(time)
+                          .toLocaleString()
+                          .split('GMT')[0]
+                      }
+                    </span>
                   </p>
                 </div>
                 <div className="col-4 text-right">
                   {type === 'SEND' ? (
-                    <p className="text-danger"> -{amount} BTC</p>
+                    <p className="text-danger">
+                      -{bitcoin.utils.satoshiToBitcoin(value)} BTC
+                    </p>
                   ) : (
-                    <p className="text-success"> +{amount} BTC</p>
+                    <p className="text-success">
+                      +{bitcoin.utils.satoshiToBitcoin(value)} BTC
+                    </p>
                   )}
 
                   <p>
