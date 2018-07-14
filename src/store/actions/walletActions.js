@@ -7,6 +7,8 @@ import {
   INCREASE_NOUNCE_DERIVATION,
   RESTORE_WALLET,
   FETCH_MNEMONIC,
+  FETCH_ADDRESS_BALANCE,
+  FETCH_ADDRESS_TRANSACTIONS,
 } from '../typesReducers'
 
 import { loadState } from '../persistWallet'
@@ -86,4 +88,22 @@ export const unlockWallet = ({ encryptedMnemonic, password }) => dispatch => {
 
       dispatch(toWallet())
     })
+}
+
+export const fetchAddressBalance = ({ address }) => dispatch => {
+  bitcoin.address.getBalance({ address }).then(balance =>
+    dispatch({
+      type: FETCH_ADDRESS_BALANCE,
+      payload: { address, balance },
+    })
+  )
+}
+
+export const fetchAddressTransactions = ({ address }) => dispatch => {
+  bitcoin.address.getAllTransactions({ address }).then(transactions =>
+    dispatch({
+      type: FETCH_ADDRESS_TRANSACTIONS,
+      payload: { address, transactions },
+    })
+  )
 }
