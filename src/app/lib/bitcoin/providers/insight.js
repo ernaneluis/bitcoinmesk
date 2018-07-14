@@ -1,17 +1,24 @@
 import 'whatwg-fetch'
 //https://bws.bitpay.com/bws/api
 // https://github.com/bitpay/insight-api
-const URL_API = 'https://insight.bitpay.com/api/'
+const URL_API =
+  process.env.REACT_APP_ENV === 'development'
+    ? 'https://test-insight.bitpay.com/api'
+    : 'https://insight.bitpay.com/api'
 
 export const getTransaction = ({ txhash }) => fetch(`${URL_API}/tx/${txhash}`)
 
-export const getAllTransactions = ({ address }) =>
-  fetch(`${URL_API}/txs/?address=${address}`)
+export const getAllTransactions = async ({ address }) =>
+  await fetch(`${URL_API}/txs/?address=${address}`).then(
+    async res => (await res.json()).txs
+  )
 
 export const getAddress = ({ address }) => fetch(`${URL_API}/addr/${address}`)
 
 export const getBalance = async ({ address }) =>
-  await fetch(`${URL_API}/addr/${address}/balance`).then(res => res)
+  await fetch(`${URL_API}/addr/${address}/balance`).then(
+    async res => await res.json()
+  )
 
 // /insight-api/addr/[:addr]/totalReceived
 // /insight-api/addr/[:addr]/totalSent
