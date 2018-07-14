@@ -12,7 +12,10 @@ import {
   createKey,
   restoreWallet,
   fetchAllKeys,
+  fetchAddressTransactions,
 } from '../store/actions/walletActions'
+
+import { getLastAddress } from '../store/selectors'
 
 const routesMap = {
   WALLET: {
@@ -25,13 +28,16 @@ const routesMap = {
         dispatch(redirect(toWelcome()))
       else if (isEmpty(getState().wallet.masterPrivateKey))
         dispatch(redirect(toLock()))
-      // else {
-      //   const keys = getState().wallet.keys
-      //   const masterPrivateKey = getState().wallet.masterPrivateKey
-      //   const nounceDeriviation = getState().wallet.vault.nounceDeriviation
-      //   if (keys.length !== nounceDeriviation)
-      //     dispatch(fetchAllKeys({ masterPrivateKey, nounceDeriviation }))
-      // }
+      else {
+        await dispatch(
+          fetchAddressTransactions({ address: getLastAddress(getState()) })
+        )
+        //   const keys = getState().wallet.keys
+        //   const masterPrivateKey = getState().wallet.masterPrivateKey
+        //   const nounceDeriviation = getState().wallet.vault.nounceDeriviation
+        //   if (keys.length !== nounceDeriviation)
+        //     dispatch(fetchAllKeys({ masterPrivateKey, nounceDeriviation }))
+      }
     },
   },
 
