@@ -7,6 +7,8 @@ import {
   INCREASE_NOUNCE_DERIVATION,
   FETCH_ALL_KEYS_SUCCESS,
   FETCH_MNEMONIC,
+  FETCH_ADDRESS_BALANCE,
+  FETCH_ADDRESS_TRANSACTIONS,
 } from '../typesReducers'
 
 // not safe keep on local storage uncrypted data such as masterPrivateKey
@@ -23,9 +25,11 @@ export const initialState = {
     nounceDeriviation: 0,
     passwordHint: '',
     keys: [],
+    transactions: {},
   },
   masterPrivateKey: '',
   mnemonic: '',
+  balances: {},
 }
 
 export default (state = initialState, { type, payload, error }) => {
@@ -90,6 +94,33 @@ export default (state = initialState, { type, payload, error }) => {
         ...state,
         mnemonic: payload,
       }
+
+    case FETCH_ADDRESS_BALANCE: {
+      console.log('FETCH_ADDRESS_BALANCE', payload)
+      const { address, balance } = payload
+      const balances = state.balances
+      balances[address] = balance
+
+      return {
+        ...state,
+        balances: { ...balances },
+      }
+    }
+
+    case FETCH_ADDRESS_TRANSACTIONS: {
+      console.log('FETCH_ADDRESS_TRANSACTIONS', payload)
+      const { address, transactions } = payload
+      const vaultTransactions = state.vault.transactions
+      vaultTransactions[address] = transactions
+
+      return {
+        ...state,
+        vault: {
+          ...state.vault,
+          transactions: { ...vaultTransactions },
+        },
+      }
+    }
 
     default:
       return state
