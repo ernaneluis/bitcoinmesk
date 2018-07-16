@@ -52,8 +52,8 @@ response
 */
 
 // Transaction Broadcasting POST response: { txid: [:txid] }
-export const sendTransaction = ({ rawTx }) =>
-  fetch(`${URL_API}/tx/send`, {
+export const sendTransaction = async ({ rawTx }) =>
+  await fetch(`${URL_API}/tx/send`, {
     method: 'POST',
     body: JSON.stringify(rawTx),
-  })
+  }).then(async res => await res.json())
