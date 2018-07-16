@@ -25,7 +25,7 @@ const HeaderWrapper = styled.header`
   height: 23vh;
 `
 
-const Wallet = ({ address, balance, transactions, onSendClick }) => (
+const Wallet = ({ balance, transactions, onSendClick }) => (
   <div>
     <HeaderWrapper className="container">
       <div className="row pt-2 justify-content-between">
@@ -47,7 +47,6 @@ const Wallet = ({ address, balance, transactions, onSendClick }) => (
             {bitcoin.utils.satoshiToBitcoin(balance)}{' '}
             <FontAwesomeIcon icon={faBitcoin} />
           </h3>
-          <small className="text-muted">{address} </small>
         </div>
       </div>
 
@@ -94,7 +93,11 @@ const Wallet = ({ address, balance, transactions, onSendClick }) => (
                   <p>
                     <strong className="text-gray-dark">
                       <a
-                        href={`https://insight.bitpay.com/tx/${txid}`}
+                        href={
+                          process.env.REACT_APP_ENV === 'development'
+                            ? `https://test-insight.bitpay.com/tx/${txid}`
+                            : `https://insight.bitpay.com/tx/${txid}`
+                        }
                         target="_blank"
                       >
                         {txid.substr(0, 50)}...
