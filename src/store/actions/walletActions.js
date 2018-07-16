@@ -20,14 +20,10 @@ export const createKey = ({
   masterPrivateKey,
   nounceDeriviation,
 }) => dispatch => {
-  let key = {
-    privateKey: '',
-    publicKey: '',
-    address: '',
-  }
+  const path = bitcoin.key.getDerivationPath(nounceDeriviation)
 
   return bitcoin.key
-    .deriveKey(masterPrivateKey, nounceDeriviation)
+    .deriveKey(masterPrivateKey, path)
     .then(key => {
       dispatch({
         type: CREATE_KEY_SUCCESS,
@@ -85,8 +81,6 @@ export const unlockWallet = ({ encryptedMnemonic, password }) => dispatch => {
         type: FETCH_MASTER_PRIVATE_KEY,
         payload: masterPrivateKey.toString(),
       })
-
-      dispatch(toWallet())
     })
 }
 
@@ -99,11 +93,12 @@ export const fetchAddressBalance = ({ address }) => dispatch => {
   )
 }
 
-export const fetchAddressTransactions = ({ address }) => dispatch => {
-  bitcoin.address.getAllTransactions({ address }).then(transactions =>
-    dispatch({
-      type: FETCH_ADDRESS_TRANSACTIONS,
-      payload: { address, transactions },
-    })
-  )
-}
+export const fetchAllTransactions = addresses => dispatch =>
+  addresses.forEach(address => {
+    bitcoin.address.getAllTransactions({ address }).then(transactions =>
+      dispatch({
+        type: FETCH_ADDRESS_TRANSACTIONS,
+        payload: { address, transactions },
+      })
+    )
+  })
