@@ -56,14 +56,19 @@ export const createSeedFromEvent = e => dispatch => {
   }
 }
 
-export const initWallet = ({ mnemonic, password, passwordHint }) => dispatch =>
+export const newWallet = ({ mnemonic, password, passwordHint }) => dispatch =>
   bitcoin.utils
     .encrypt({ message: mnemonic, password })
     .then(encryptedMnemonic => {
       // save object valut to localstorage using persistWallet
+      const hashedPassword = bitcoin.utils.hash(password)
       dispatch({
         type: SAVE_WALLET,
-        payload: { encryptedMnemonic, passwordHint },
+        payload: {
+          encryptedMnemonic,
+          passwordHint,
+          encryptedPassword: hashedPassword,
+        },
       })
 
       return bitcoin.mnemonic.getMasterKey({ mnemonic })
