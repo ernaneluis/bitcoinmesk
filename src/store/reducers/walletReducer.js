@@ -22,11 +22,12 @@ import {
 
 export const initialState = {
   vault: {
-    encryptedMnemonic: '',
-    nounceDeriviation: 0,
     changeNounceDeriviation: 0,
-    passwordHint: '',
+    encryptedMnemonic: '',
+    encryptedPassword: '',
     keys: {},
+    nounceDeriviation: 0,
+    passwordHint: '',
   },
   masterPrivateKey: '',
   mnemonic: '',
