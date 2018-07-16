@@ -10,6 +10,7 @@ import {
   SAVE_WALLET,
   SAVE_WALLET_FAILURE,
   SAVE_MASTER_PRIVATE_KEY,
+  FETCH_MASTER_PRIVATE_KEY,
 } from '../typesReducers'
 
 import { redirect } from 'redux-first-router'
@@ -17,6 +18,8 @@ import { toWallet } from './routerActions'
 
 import * as bitcoin from '../../app/lib/bitcoin'
 import Seeder from '../../app/lib/bitcoin/bitcoin.seeder'
+
+import { createKey } from './walletActions'
 
 let seeder
 
@@ -62,6 +65,22 @@ export const initWallet = ({ mnemonic, password, passwordHint }) => dispatch =>
         type: SAVE_WALLET,
         payload: { encryptedMnemonic, passwordHint },
       })
+
+      return bitcoin.mnemonic.getMasterKey({ mnemonic })
+    })
+    .then(masterPrivateKey => {
+      dispatch({
+        type: FETCH_MASTER_PRIVATE_KEY,
+        payload: masterPrivateKey.toString(),
+      })
+
+      dispatch(
+        createKey({
+          masterPrivateKey: masterPrivateKey,
+          nounceDeriviation: 0,
+        })
+      )
+
       dispatch(redirect(toWallet()))
     })
     .catch(error => {
