@@ -45,11 +45,14 @@ const dencrypt = ({ message, password }) =>
 const satoshiToBitcoin = satoshi => satoshi / Math.pow(10, 8)
 const bitcoinToSatoshi = bitcoin => bitcoin * Math.pow(10, 8)
 
+const hash = input => CryptoJS.SHA256(input).toString()
+
 export default {
   bytesToHex,
   getRandomInt,
   encrypt,
   dencrypt,
+  hash,
   satoshiToBitcoin,
   bitcoinToSatoshi,
 }
