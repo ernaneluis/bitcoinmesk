@@ -1,10 +1,19 @@
 import { HDPrivateKey, PrivateKey, Networks, PublicKey } from 'bitcore-lib'
 
 // ' means hardened or h, 0' === 0h
+// master derivationPath: "m/44'/0'/0'/0",
+//  receive/external account will come from  "m/44'/0'/0'/0/*"
+// master change derivationPath: "m/44'/0'/0'/1",
+//  change/internal account will come from  "m/44'/0'/0'/1/*"
 // derivationPath: "m/44'/0'/0'/0/0",
 // derivation scheme: "m / 44' / coin_type' / account' / change / address_index"
 
-const getDerivationPath = (nounceDeriviation, isChange = false) => {
+// external account A(m/44'/0'/0'/0/A) should send the change to same internal acount A(m/44'/0'/0'/1/A)
+// when do account discovery only look for externals
+
+// when spoend the coins again, it will be spend from the change address
+
+export const getDerivationPath = (nounceDeriviation, isChange = false) => {
   const coinType =
     process.env.REACT_APP_ENV === 'development'
       ? '1' // Bitcoin Testnet
@@ -20,18 +29,23 @@ const getDerivationPath = (nounceDeriviation, isChange = false) => {
 // External chain is used for addresses that are meant to be visible outside of the wallet
 // (e.g. for receiving payments). Internal chain is used for addresses which are not meant to be visible
 // outside of the wallet and is used for return transaction change. Public derivation is used at this level.
-const getChangeDerivationPath = nounceDeriviation =>
-  getDerivationPath(nounceDeriviation, true)
 
-export const deriveKey = (masterPrivateKey, nounceDeriviation) =>
+export const getChangeDerivationPath = changeNounceDeriviation =>
+  getDerivationPath(changeNounceDeriviation, true)
+
+export const deriveKey = (masterPrivateKey, path) =>
   new Promise((resolve, reject) => {
     try {
       let key = {
         privateKey: '',
         publicKey: '',
         address: '',
+        path,
+        isChange: !!+path.split('/')[4],
+        transactions: [],
       }
-      derivePrivateKeyFromMasterPrivateKey(masterPrivateKey, nounceDeriviation)
+
+      derivePrivateKeyFromMasterPrivateKey(masterPrivateKey, path)
         .then(privateKey => {
           key.privateKey = privateKey.toWIF()
           return getPublicKeyFromPrivateKey(privateKey)
@@ -51,19 +65,12 @@ export const deriveKey = (masterPrivateKey, nounceDeriviation) =>
   })
 
 // https://bitcore.io/api/lib/hd-keys
-const derivePrivateKeyFromMasterPrivateKey = (
-  masterPrivateKey,
-  nounceDeriviation
-) =>
+const derivePrivateKeyFromMasterPrivateKey = (masterPrivateKey, path) =>
   new Promise((resolve, reject) => {
     try {
       const hdPrivateKey = new HDPrivateKey(masterPrivateKey)
-      if (
-        HDPrivateKey.isValidPath(getDerivationPath(nounceDeriviation), true)
-      ) {
-        const derived = hdPrivateKey.derive(
-          getDerivationPath(nounceDeriviation)
-        )
+      if (HDPrivateKey.isValidPath(path, true)) {
+        const derived = hdPrivateKey.derive(path)
         const privateKey = derived.privateKey
         resolve(privateKey)
         // obtain HDPublicKey
@@ -103,8 +110,10 @@ const getAddressFromPublicKey = publicKey =>
 export default {
   deriveKey,
   derivePrivateKeyFromMasterPrivateKey,
-  getPublicKeyFromPrivateKey,
   getAddressFromPublicKey,
+  getDerivationPath,
+  getChangeDerivationPath,
+  getPublicKeyFromPrivateKey,
 }
 /*
 
