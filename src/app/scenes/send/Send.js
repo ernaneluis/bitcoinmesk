@@ -2,10 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { Field } from 'redux-form'
 
-const Send = ({ onSubmit, fromAddress }) => (
+const Send = ({ onSubmit, balance }) => (
   <form onSubmit={onSubmit}>
-    <label className="col-form-label">From Address:</label>
-    <p> {fromAddress} </p>
+    <p> {balance} </p>
 
     <label className="col-form-label">TO Address:</label>
     <Field
