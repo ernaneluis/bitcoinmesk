@@ -10,14 +10,9 @@ import {
 import * as bitcoin from '../../lib/bitcoin'
 
 const mapStateToProps = state => {
-  const address = getLastAddress(state)
-  const transactions = simplifyTransactions(
-    address,
-    state.wallet.vault.transactions[address]
-  )
-  const balance = getBalance(transactions)
+  const transactions = simplifyTransactions(state)
+  const balance = getBalance(state)
   return {
-    address,
     balance,
     transactions,
     keys: state.wallet.vault.keys,
@@ -31,11 +26,10 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const mergeProps = (
-  { address, balance, keys, masterPrivateKey, nounceDeriviation, transactions },
+  { balance, keys, masterPrivateKey, nounceDeriviation, transactions },
   { dispatch },
   { handleSubmit }
 ) => ({
-  address,
   balance,
   keys,
   masterPrivateKey,
