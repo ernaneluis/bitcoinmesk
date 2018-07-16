@@ -4,7 +4,7 @@ import { initialState } from './reducers/walletReducer'
 export const loadState = () => {
   try {
     const stringState = localStorage.getItem('bitmaskWallet')
-    return stringState === null ? initialState : JSON.parse(stringState)
+    return stringState === null ? initialState.vault : JSON.parse(stringState)
   } catch (error) {
     console.error(error)
     return initialState
@@ -13,6 +13,7 @@ export const loadState = () => {
 
 export const saveState = state => {
   try {
+    console.log('SAVE STATE TO LOCAL STORAGE ', { state })
     localStorage.setItem('bitmaskWallet', JSON.stringify(state))
   } catch (error) {
     console.error(error)
