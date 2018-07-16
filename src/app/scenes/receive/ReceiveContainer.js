@@ -4,9 +4,10 @@ import Receive from './Receive'
 import { isEmpty, last } from 'lodash'
 import { createKey } from '../../../store/actions/walletActions'
 
+import { getLastAddress, getBalance } from '../../../store/selectors'
+
 const mapStateToProps = state => ({
-  address: last(state.wallet.vault.keys).address,
-  balance: 12.65426781,
+  address: getLastAddress(state),
   masterPrivateKey: state.wallet.vault.masterPrivateKey,
   nounceDeriviation: state.wallet.vault.nounceDeriviation,
 })
