@@ -1,6 +1,6 @@
 import {
-  MAKE_TRANSACTION_SUCCESS,
-  MAKE_TRANSACTION_FAILURE,
+  BUILD_TRANSACTION_SUCCESS,
+  BUILD_TRANSACTION_FAILURE,
 } from '../typesReducers'
 
 export const initialState = {
@@ -9,11 +9,11 @@ export const initialState = {
 
 export default (state = initialState, { type, payload, error }) => {
   switch (type) {
-    case MAKE_TRANSACTION_FAILURE:
+    case BUILD_TRANSACTION_FAILURE:
       return { ...state, error }
 
-    case MAKE_TRANSACTION_SUCCESS:
-      console.log('MAKE_TRANSACTION_SUCCESS', payload)
+    case BUILD_TRANSACTION_SUCCESS:
+      console.log('BUILD_TRANSACTION_SUCCESS', payload)
       return {
         ...state,
         isTransactionConfirmed: true,
