@@ -4,8 +4,8 @@ import New from './New'
 import {
   initSeed,
   createSeedFromEvent,
-  initWallet,
-} from '../../../store/actions/initActions'
+  newWallet,
+} from '../../../store/actions/newActions'
 
 const mapStateToProps = state => ({
   seed: state.init.seed,
@@ -34,12 +34,12 @@ const mergeProps = (
     if (!isSeedingDone) dispatch(createSeedFromEvent(e))
   },
   onSubmit: handleSubmit(({ password, passwordHint }) =>
-    dispatch(initWallet({ mnemonic, password, passwordHint }))
+    dispatch(newWallet({ mnemonic, password, passwordHint }))
   ),
 })
 
 export default reduxForm({
-  form: 'initForm',
+  form: 'newForm',
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,
 })(
