@@ -9,13 +9,12 @@ import {
 } from '../store/actions/routerActions'
 
 import {
-  createKey,
   restoreWallet,
   fetchAllKeys,
-  fetchAddressTransactions,
+  fetchAllTransactions,
 } from '../store/actions/walletActions'
 
-import { getLastAddress } from '../store/selectors'
+import { getLastAddress, getAllAddresses } from '../store/selectors'
 
 const routesMap = {
   WALLET: {
@@ -25,13 +24,11 @@ const routesMap = {
       await dispatch(restoreWallet())
 
       if (isEmpty(getState().wallet.vault.encryptedMnemonic))
-        dispatch(redirect(toWelcome()))
+        await dispatch(redirect(toWelcome()))
       else if (isEmpty(getState().wallet.masterPrivateKey))
-        dispatch(redirect(toLock()))
+        await dispatch(redirect(toLock()))
       else {
-        await dispatch(
-          fetchAddressTransactions({ address: getLastAddress(getState()) })
-        )
+        await dispatch(fetchAllTransactions(getAllAddresses(getState())))
         //   const keys = getState().wallet.keys
         //   const masterPrivateKey = getState().wallet.masterPrivateKey
         //   const nounceDeriviation = getState().wallet.vault.nounceDeriviation
@@ -47,7 +44,7 @@ const routesMap = {
       await dispatch(restoreWallet())
       // TODO: more safe checks like this should be added in future
       if (!isEmpty(getState().wallet.vault.encryptedMnemonic))
-        dispatch(redirect(toWallet()))
+        await dispatch(redirect(toWallet()))
     },
   },
 
@@ -56,7 +53,7 @@ const routesMap = {
     thunk: async (dispatch, getState) => {
       await dispatch(restoreWallet())
       if (!isEmpty(getState().wallet.vault.encryptedMnemonic))
-        dispatch(redirect(toWallet()))
+        await dispatch(redirect(toWallet()))
     },
   },
 
@@ -68,20 +65,14 @@ const routesMap = {
     path: '/receive',
     thunk: async (dispatch, getState) => {
       await dispatch(restoreWallet())
-      // if it is just after new
-      if (!!getState().wallet.vault.nounceDeriviation.length) {
-        await dispatch(
-          createKey({
-            masterPrivateKey: getState().wallet.masterPrivateKey,
-            nounceDeriviation: 0,
-          })
-        )
-      }
     },
   },
 
   SEND: {
     path: '/send',
+    thunk: async (dispatch, getState) => {
+      await dispatch(restoreWallet())
+    },
   },
 
   RESTORE: {
@@ -90,14 +81,15 @@ const routesMap = {
 
   BACKUP: {
     path: '/backup',
-    thunk: (dispatch, getState) => {
-      if (isEmpty(getState().wallet.mnemonic)) dispatch(redirect(toLock()))
+    thunk: async (dispatch, getState) => {
+      if (isEmpty(getState().wallet.mnemonic))
+        await dispatch(redirect(toLock()))
     },
   },
 
   CATCH_ALL_REDIRECT: {
     path: '*',
-    thunk: dispatch => dispatch(redirect(toWallet())),
+    thunk: async dispatch => await dispatch(redirect(toWallet())),
   },
 }
 
