@@ -11,7 +11,7 @@ import createHistory from 'history/createBrowserHistory'
 
 import routesMap from '../app/routesMap'
 import walletReducer from '../store/reducers/walletReducer'
-import initReducer from '../store/reducers/initReducer'
+import newReducer from '../store/reducers/newReducer'
 
 import { persistWallet } from './persistWallet'
 
@@ -30,7 +30,7 @@ const rootReducer = combineReducers({
   form: formReducer,
   location: locationReducer,
   wallet: walletReducer,
-  init: initReducer,
+  init: newReducer,
 })
 
 const enhancers = [routerEnhancer]
