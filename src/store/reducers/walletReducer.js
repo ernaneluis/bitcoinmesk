@@ -5,6 +5,7 @@ import {
   SAVE_WALLET,
   FETCH_MASTER_PRIVATE_KEY,
   INCREASE_NOUNCE_DERIVATION,
+  INCREASE_CHANGE_NOUNCE_DERIVATION,
   FETCH_ALL_KEYS_SUCCESS,
   FETCH_MNEMONIC,
   FETCH_ADDRESS_BALANCE,
@@ -23,13 +24,12 @@ export const initialState = {
   vault: {
     encryptedMnemonic: '',
     nounceDeriviation: 0,
+    changeNounceDeriviation: 0,
     passwordHint: '',
-    keys: [],
-    transactions: {},
+    keys: {},
   },
   masterPrivateKey: '',
   mnemonic: '',
-  balances: {},
 }
 
 export default (state = initialState, { type, payload, error }) => {
@@ -37,16 +37,19 @@ export default (state = initialState, { type, payload, error }) => {
     case CREATE_KEY_FAILURE:
       return { ...state, error }
 
-    case CREATE_KEY_SUCCESS:
+    case CREATE_KEY_SUCCESS: {
       console.log('CREATE_KEY_SUCCESS', payload)
+      const keys = state.vault.keys
+      keys[payload.address] = { ...payload }
       return {
         ...state,
         vault: {
           ...state.vault,
           // redux expect a new state object in order to call render
-          keys: [...state.vault.keys, payload],
+          keys: keys,
         },
       }
+    }
 
     case FETCH_ALL_KEYS_SUCCESS:
       console.log('FETCH_ALL_KEYS_SUCCESS', payload)
@@ -63,13 +66,18 @@ export default (state = initialState, { type, payload, error }) => {
       console.log('RESTORE_WALLET', payload)
       return {
         ...state,
-        vault: payload,
+        vault: { ...payload },
       }
 
     case SAVE_WALLET:
       return {
         ...state,
-        vault: { ...payload, nounceDeriviation: 0, keys: [] },
+        vault: {
+          ...payload,
+          nounceDeriviation: 0,
+          changeNounceDeriviation: 0,
+          keys: {},
+        },
       }
 
     case FETCH_MASTER_PRIVATE_KEY:
@@ -88,6 +96,14 @@ export default (state = initialState, { type, payload, error }) => {
         vault: { ...state.vault, nounceDeriviation },
       }
 
+    case INCREASE_CHANGE_NOUNCE_DERIVATION:
+      console.log('INCREASE_CHANGE_NOUNCE_DERIVATION')
+      const changeNounceDeriviation = state.vault.changeNounceDeriviation + 1
+      return {
+        ...state,
+        vault: { ...state.vault, changeNounceDeriviation },
+      }
+
     case FETCH_MNEMONIC:
       console.log('FETCH_MNEMONIC', payload)
       return {
@@ -95,29 +111,18 @@ export default (state = initialState, { type, payload, error }) => {
         mnemonic: payload,
       }
 
-    case FETCH_ADDRESS_BALANCE: {
-      console.log('FETCH_ADDRESS_BALANCE', payload)
-      const { address, balance } = payload
-      const balances = state.balances
-      balances[address] = balance
-
-      return {
-        ...state,
-        balances: { ...balances },
-      }
-    }
-
     case FETCH_ADDRESS_TRANSACTIONS: {
       console.log('FETCH_ADDRESS_TRANSACTIONS', payload)
       const { address, transactions } = payload
-      const vaultTransactions = state.vault.transactions
-      vaultTransactions[address] = transactions
+      let keys = state.vault.keys
+      let key = keys[address]
+      keys[address] = { ...key, transactions }
 
       return {
         ...state,
         vault: {
           ...state.vault,
-          transactions: { ...vaultTransactions },
+          keys: { ...keys },
         },
       }
     }
