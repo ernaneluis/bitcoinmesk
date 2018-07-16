@@ -66,7 +66,7 @@ export const fetchAllKeys = ({
   }
 }
 
-export const unlockWallet = ({ encryptedMnemonic, password }) => dispatch => {
+export const unlockWallet = ({ encryptedMnemonic, password }) => dispatch =>
   bitcoin.utils
     .dencrypt({ message: encryptedMnemonic, password })
     .then(mnemonic => {
@@ -82,16 +82,14 @@ export const unlockWallet = ({ encryptedMnemonic, password }) => dispatch => {
         payload: masterPrivateKey.toString(),
       })
     })
-}
 
-export const fetchAddressBalance = ({ address }) => dispatch => {
+export const fetchAddressBalance = ({ address }) => dispatch =>
   bitcoin.address.getBalance({ address }).then(balance =>
     dispatch({
       type: FETCH_ADDRESS_BALANCE,
       payload: { address, balance },
     })
   )
-}
 
 export const fetchAllTransactions = addresses => dispatch =>
   addresses.forEach(address => {
